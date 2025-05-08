@@ -1,0 +1,292 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+using namespace std;
+//clase de la persona
+class Cliente
+{
+public:
+	//int ID;
+	string nombre;
+	string dni;
+	string telefono;
+	Cliente(string nombre,string dni,string telefono): nombre(nombre), dni(dni), telefono(telefono){}
+};
+//clase de encomienda/pedidos
+class Encomienda
+{
+public:
+	string codigo;
+	string descripcion;
+	float peso;
+	string estado;
+	Cliente emisor;
+	Cliente destinatario;
+	Encomienda(string codigo, string descripcion, float peso, Cliente emisor,Cliente destinatario):
+		codigo(codigo),descripcion(descripcion),peso(peso),estado("por enviar"), emisor(emisor), destinatario(destinatario)
+	{
+	}
+};
+//clase de la empresa
+class Empresa
+{
+private:
+	vector<Encomienda> Encomiendas;
+public:
+	//método crear encomienda
+	void CrearEncomienda()
+	{
+		//declarando variables
+		string codigo, descripcion, nomE, dniE, telE, nomD, dniD, telD;
+		bool repetido = false;
+		float peso;
+		//entrada
+		cout << "------------------------------------" << endl;
+		cout << "Ingrese codigo de la encomienda:" << endl;
+		cin >> codigo;
+		cin.ignore();
+		//verificación de código NO repetido/ existente
+		for (auto& e : Encomiendas)
+		{
+			if (e.codigo == codigo)
+			{
+				repetido = true;
+				break;
+			}
+		}
+		while (repetido == true)
+		{
+			repetido = false;
+			cout << "ERROR. Codigo invalido" << endl;
+			cout << "Ingrese codigo de la encomienda:" << endl;
+			cin >> codigo;
+			cin.ignore(1000,'\n');
+			//verificación dentro del bucle
+			for (auto& e : Encomiendas)
+			{
+				if (e.codigo == codigo)
+				{
+					repetido = true;
+					break;
+				}
+			}
+		}
+		cout << "Ingrese descripcion de su encomienda:" << endl;
+		getline(cin, descripcion);
+		cout << "Ingrese peso de su encomienda (kg):" << endl;
+		cin >> peso;
+		cin.ignore(1000,'\n');
+		//verificación del peso
+		while (cin.fail() || peso <= 0)
+		{
+			cin.clear();
+			cin.ignore(1000, '\n');
+			cout << "ERROR. Peso invalido" << endl;
+			cout << "Ingrese peso de su encomienda (kg):" << endl;
+			cin >> peso;
+			cin.ignore(1000, '\n');
+		}
+		cout << "Ingrese nombre del emisor:" << endl;
+		getline(cin, nomE);
+		cout << "Ingrese DNI del emisor:" << endl;
+		cin >> dniE;
+		cout << "Ingrese telefono del emisor:" << endl;
+		cin >> telE;
+		cin.ignore();
+		cout << "Ingrese nombre del destinatario:" << endl;
+		getline(cin, nomD);
+		cout << "Ingrese DNI del destinatario:" << endl;
+		cin >> dniD;
+		cout << "Ingrese telefono del destinatario:" << endl;
+		cin >> telD;
+		cout << "------------------------------------" << endl;
+		//guardando los datos
+		Cliente emisor(nomE, dniE, telE); //guarda los datos del emisor
+		Cliente destinatario(nomD, dniD, telD); //guarda los datos del destinatario
+		Encomienda temp(codigo, descripcion, peso,emisor, destinatario); //guarda la encomienda
+		Encomiendas.push_back(temp); //inserta los datos en el array
+		cout << "Datos guardados correctamente!" << endl;
+		cout << "------------------------------------" << endl;
+	}
+	//método mostrar encomienda
+	void MostrarEncomiendas()
+	{
+		for (auto& e : Encomiendas)
+		{
+			cout << "------------------------------------" << endl;
+			cout << ">Codigo de la encomienda: " << e.codigo << endl;
+			cout << ">Estado de la encomienda: " <<e.estado << endl;
+			cout << ">descripcion            : " << e.descripcion << endl;
+			cout << ">peso de la encomienda  : " << e.peso << endl;
+			cout << ">Nombre del emisor      : " << e.emisor.nombre << endl;
+			cout << ">DNI del emisor         : " << e.emisor.dni << endl;
+			cout << ">Tel del emisor         : " << e.emisor.telefono << endl;
+			cout << ">Nombre del destinatario: " << e.destinatario.nombre << endl;
+			cout << ">DNI del destinatario   : " << e.destinatario.dni << endl;
+			cout << ">Tel del destinatario   : " << e.destinatario.telefono << endl;
+			cout << "------------------------------------" << endl;
+		}
+	}
+	//método buscar por codigo
+	void BuscarCodigo(string codigo)
+	{
+		for (auto& e : Encomiendas)
+		{
+			if (e.codigo == codigo)
+			{
+				cout << "------------------------------------" << endl;
+				cout << ">Codigo de la encomienda: " << e.codigo << endl;
+				cout << ">Estado de la encomienda: " << e.estado << endl;
+				cout << ">descripcion            : " << e.descripcion << endl;
+				cout << ">peso de la encomienda  : " << e.peso << endl;
+				cout << ">Nombre del emisor      : " << e.emisor.nombre << endl;
+				cout << ">DNI del emisor         : " << e.emisor.dni << endl;
+				cout << ">Tel del emisor         : " << e.emisor.telefono << endl;
+				cout << ">Nombre del destinatario: " << e.destinatario.nombre << endl;
+				cout << ">DNI del destinatario   : " << e.destinatario.dni << endl;
+				cout << ">Tel del destinatario   : " << e.destinatario.telefono << endl;
+				cout << "------------------------------------" << endl;
+				return;
+			}
+		}
+		cout << "------------------------------------" << endl;
+		cout << "No se encontro la encomienda con el codigo: "<< codigo << endl;
+		cout << "------------------------------------" << endl;
+	}
+	//método cambiar estado
+	void CambiarEstado(string codigo, string NuevoEstado)
+	{
+		for (auto& e : Encomiendas)
+		{
+			if (e.codigo == codigo)
+			{
+				e.estado = NuevoEstado;
+				cout << "------------------------------------" << endl;
+				cout << "Estado actualizado correctamente!" << endl;
+				cout << "------------------------------------" << endl;
+				return;
+			}
+		}
+		cout << "------------------------------------" << endl;
+		cout << "No se encontro la encomienda con el codigo: " << codigo << endl;
+		cout << "------------------------------------" << endl;
+	}
+	//método eliminar encomienda
+	void EliminarEncomienda(string codigo)
+	{
+		for (int i=0;i<Encomiendas.size();i++)
+		{
+			if (Encomiendas[i].codigo == codigo)
+			{
+				Encomiendas.erase(Encomiendas.begin() + i);
+				cout << "------------------------------------" << endl;
+				cout << "Encomienda eliminada correctamente!" << endl;
+				cout << "------------------------------------" << endl;
+				return;
+			}
+		}
+		cout << "------------------------------------" << endl;
+		cout << "No se encontro la encomienda con el codigo: " << codigo << endl;
+		cout << "------------------------------------" << endl;
+	}
+};
+
+int main()
+{
+	Empresa empresa;
+	int puntero;
+	string codigo, NuevoEstado, aceptar;
+	do
+	{
+		cout << "------------------------------------" << endl;
+		cout <<"     empresa LogiTrans S.A     " << endl;
+		cout << "------------------------------------" << endl;
+		cout << "Menu de opciones:" << endl;
+		cout << ">1. Crear nueva encomienda" << endl;
+		cout << ">2. Buscar encomienda por codigo" << endl;
+		cout << ">3. Mostrar encomiendas" << endl;
+		cout << ">4. Cambiar estado de la encomienda" << endl;
+		cout << ">5. Eliminar encomienda por codigo" << endl;
+		cout << ">6. Salir del programa" << endl;
+		cout << "------------------------------------" << endl;
+		cin >> puntero;
+		//verificación del puntero
+		while (cin.fail() )
+		{
+			cin.clear();
+			cin.ignore(1000, '\n');
+			cout << "ERROR. Opcion invalida." << endl;
+			cout << "Entrada inválida. Por favor, ingrese un número del menú:" << endl;
+			cin >> puntero;
+		}
+		//casos del puntero
+		switch (puntero)
+		{
+		case 1:
+			empresa.CrearEncomienda();
+			break;
+		case 2:
+			cout << "------------------------------------" << endl;
+			cout << "Ingrese el codigo de la encomienda:" << endl;
+			cin >> codigo;
+			empresa.BuscarCodigo(codigo);
+			cout << "------------------------------------" << endl;
+			break;
+		case 3:
+			empresa.MostrarEncomiendas();
+			break;
+		case 4:
+			cout << "------------------------------------" << endl;
+			cout << "Ingrese el codigo de la encomienda:" << endl;
+			cin >> codigo;
+			cout << "Ingrese nuevo estado (en transito, por enviar, entregado):" << endl;
+			cin.ignore();
+			getline(cin, NuevoEstado);
+			//verificación
+			while (NuevoEstado != "en transito" && NuevoEstado != "por enviar" && NuevoEstado != "entregado")
+			{
+				cout << "ERROR. Estado invalido." << endl;
+				cout << "Ingrese nuevo estado (en transito, por enviar, entregado):" << endl;
+				getline(cin, NuevoEstado);
+			}
+			empresa.CambiarEstado(codigo,NuevoEstado);
+			cout << "------------------------------------" << endl;
+			break;
+		case 5:
+			cout << "------------------------------------" << endl;
+			cout << "Ingrese el codigo de la encomienda:" << endl;
+			cin >> codigo;
+			cout << "------------------------------------" << endl;
+			//verificación
+			cout << "Estas seguro de eliminar la encomienda? S/N" << endl;
+			cin >> aceptar;
+			if (aceptar == "S")
+			{
+				empresa.EliminarEncomienda(codigo);
+			}
+			else
+			{
+				cout << "------------------------------------" << endl;
+				cout << "Proceso finalizado, encomienda no eliminada!" << endl;
+				cout << "------------------------------------" << endl;
+				break;
+			}
+			break;
+		case 6:
+			cout << "------------------------------------" << endl;
+			cout << "Saliendo del programa. . ." << endl;
+			cout << "------------------------------------" << endl;
+			break;
+		default:
+			cout << "------------------------------------" << endl;
+			cout << "La opcion no es valida" << endl;
+			cout << "------------------------------------" << endl;
+			break;
+		}
+	} 
+	while (puntero != 6);
+	system("pause");
+	return 0;
+}
+//código fuente elaborado por Johan Aamir Valentin Garcia
